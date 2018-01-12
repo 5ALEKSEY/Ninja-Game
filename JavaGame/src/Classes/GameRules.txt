@@ -1,0 +1,19 @@
+Welcome to the mini-game Ninja Game!
+
+To control characters use the order keys:
+Player_1: w - up, s- down, 
+          d - right, a - left.
+Player_2: up - up, down - down, 
+          right - right, left - left.
+
+To win you need to collect bonuses:
+1. Regular bonus (+1 point);
+2. Unusual bonus (+2 point);
+3. Spec-bonus (allows you to use special reception).
+
+Special takes 5 points from your opponent.
+To use the special reception use the keys:
+Player_1: Space.
+Player_2: Enter.
+
+The game continues to 50 points. Good luck!

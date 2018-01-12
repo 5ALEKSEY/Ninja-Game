@@ -1,5 +1,3 @@
-package Classes;
-
 import javafx.animation.Animation;
 import javafx.animation.RotateTransition;
 import javafx.scene.effect.DropShadow;
@@ -16,9 +14,9 @@ public class Bonuse extends Rectangle {
     private DropShadow Shadow;
     private RotateTransition RotTransition;
     private int KindOfBonuse;
-    Image HighBonuseImage = new Image(getClass().getResourceAsStream("Pictires/highbonus.png"));
-    Image BonuseImage = new Image(getClass().getResourceAsStream("Pictires/bonus.png"));
-    Image SpecBonuseImage = new Image(getClass().getResourceAsStream("Pictires/specbonus.png"));
+    Image HighBonuseImage = new Image(getClass().getResourceAsStream("highbonus.png"));
+    Image BonuseImage = new Image(getClass().getResourceAsStream("bonus.png"));
+    Image SpecBonuseImage = new Image(getClass().getResourceAsStream("specbonus.png"));
 
     public Bonuse (int OffsetX, int OffsetY, int KindOfBonuse) {
         this.OffsetX = OffsetX;

@@ -1,5 +1,3 @@
-package Classes;
-
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -53,7 +51,7 @@ public class Characters extends Pane{
         }
     }
     public void isBonuseEat() {
-        Main.bonuses.forEach((bonuse -> {
+        GameProcess.bonuses.forEach((bonuse -> {
             if (this.getBoundsInParent().intersects(bonuse.getBoundsInParent())) {
                 this.DellBonuse = bonuse;
                 if (this.DellBonuse.GetKindOfBonuse() == 3)
@@ -62,8 +60,8 @@ public class Characters extends Pane{
                     score += this.DellBonuse.GetKindOfBonuse();
             }
         }));
-        Main.bonuses.remove(this.DellBonuse);
-        Main.root.getChildren().remove(this.DellBonuse);
+        GameProcess.bonuses.remove(this.DellBonuse);
+        GameProcess.root.getChildren().remove(this.DellBonuse);
     }
 
     public void SetSpecialReception (boolean SpecialReception) {
