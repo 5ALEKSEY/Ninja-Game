@@ -11,7 +11,6 @@ public class TimerCount implements Runnable {
             try {
                 Thread.sleep(1000);
                 GameProcess.timercount++;
-                System.out.println(GameProcess.timercount);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
