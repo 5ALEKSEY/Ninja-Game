@@ -16,4 +16,10 @@ To use the special reception use the keys:
 Player_1: Space.
 Player_2: Enter.
 
+To correctly nickname input, use only English
+letters or numbers.
+
+If you want to take a position in the table, you want
+to win with a record in time less than 80 seconds.
+
 The game continues to 50 points. Good luck!

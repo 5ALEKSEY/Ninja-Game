@@ -1,16 +1,19 @@
 import javafx.animation.AnimationTimer;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -20,7 +23,7 @@ public class GameProcess {
     public static ArrayList<Bonuse> bonuses = new ArrayList<>();
     Stage GameStage = new Stage();
     static Pane root = new Pane();
-    Scene scene = new Scene(root);
+    Scene Gamescene = new Scene(root);
     Image IMAGE1 = new Image(getClass().getResourceAsStream("human_1.png"));
     Image IMAGE2 = new Image(getClass().getResourceAsStream("human_2.png"));
     Image IMAGE3 = new Image(getClass().getResourceAsStream("fon.jpg"));
@@ -39,8 +42,11 @@ public class GameProcess {
     Label labelContinue = new Label();
     Button Yesbutton = new Button("Yes");
     Button Nobutton = new Button("No");
+    Button SaveRecordButton = new Button("Congratulations! Your record can be saved!");
     int WinOffsetX = 85;
     int WinOffsetY = 100;
+    Thread RecordTimer;
+    public static Integer timercount;
 
     public void StartGame() throws Exception {
         root.setPrefSize(600,400);
@@ -55,8 +61,8 @@ public class GameProcess {
         ScoreLabel.setTextFill(Color.AZURE);
         ScoreLabel.setTranslateX(260);
         root.getChildren().addAll(player2, ScoreLabel);
-        scene.setOnKeyPressed(event -> keys.put(event.getCode(), true));
-        scene.setOnKeyReleased(event -> keys.put(event.getCode(), false));
+        Gamescene.setOnKeyPressed(event -> keys.put(event.getCode(), true));
+        Gamescene.setOnKeyReleased(event -> keys.put(event.getCode(), false));
 
         labelTimer.setFont(Font.font("Times new Roman", FontWeight.BOLD, 300));
         labelTimer.setTextFill(Color.BLUE);
@@ -89,15 +95,11 @@ public class GameProcess {
 
         Timer.start();
 
-        GameStage.setScene(scene);
+        GameStage.setScene(Gamescene);
         GameStage.setResizable(false);
         GameStage.setTitle("Ninja Game");
         GameStage.getIcons().add(StageIcon);
         GameStage.show();
-    }
-
-    public void ExitGame() {
-        GameStage.close();
     }
 
     public boolean isPressed(KeyCode keyCode) {
@@ -106,7 +108,6 @@ public class GameProcess {
 
     public void UpdateForFirstCharacter() {
         if(isPressed(KeyCode.UP)) {
-
             player1.animation.play();
             player1.animation.setOffsetY(192);
             player1.moveY(-2);
@@ -131,6 +132,7 @@ public class GameProcess {
         else
             player1.animation.stop();
     }
+
     public void UpdateForSecondCharacter() {
         if(isPressed(KeyCode.W)) {
             player2.animation.play();
@@ -156,6 +158,7 @@ public class GameProcess {
         } else
             player2.animation.stop();
     }
+
     public void AddBonus() {
         int specrandom = (int)Math.floor(Math.random()*1000);
         int sx = (int)Math.floor(Math.random()*580);
@@ -182,6 +185,7 @@ public class GameProcess {
             root.getChildren().addAll(specbonuse);
         }
     }
+
     public void UpdateScore() {
         ScoreLabel.setText(player2.score + ":" + player1.score);
     }
@@ -196,7 +200,7 @@ public class GameProcess {
             root.getChildren().addAll(labelWIN);
             Continue();
         }
-        if(player2.score >= END_GAME){
+        if(player2.score >= END_GAME) {
             labelWIN.setText("Blue player WIN!");
             labelWIN.setFont(Font.font("Arial", FontWeight.BOLD, 60));
             labelWIN.setTranslateY(WinOffsetY);
@@ -206,13 +210,21 @@ public class GameProcess {
             Continue();
         }
     }
+
     public void Continue() {
         GameTimer.stop();
+        RecordTimer.stop();
         labelContinue.setText("Continue?");
         labelContinue.setFont(Font.font("Arial", FontWeight.LIGHT, 55));
         labelContinue.setTranslateX(WinOffsetX + 100);
         labelContinue.setTranslateY(WinOffsetY + 80);
         labelContinue.setTextFill(Color.BISQUE);
+
+        SaveRecordButton.setPrefSize(400,30);
+        SaveRecordButton.setFont(Font.font("Arial", FontWeight.LIGHT, 15));
+        SaveRecordButton.setTextFill(Color.RED);
+        SaveRecordButton.setTranslateX(110);
+        SaveRecordButton.setTranslateY(330);
 
         Yesbutton.setPrefSize(100,30);
         Yesbutton.setFont(Font.font("Arial", FontWeight.LIGHT, 20));
@@ -226,14 +238,17 @@ public class GameProcess {
         Nobutton.setTranslateX(Yesbutton.getTranslateX() + 150);
         Nobutton.setTranslateY(Yesbutton.getTranslateY());
 
+        if (timercount < 80)
+            root.getChildren().add(SaveRecordButton);
+
         root.getChildren().addAll(labelContinue, Yesbutton, Nobutton);
 
         Nobutton.setOnAction(event -> {
-            ((Node)(event.getSource())).getScene().getWindow().hide();
+            GameStage.close();
         });
 
         Yesbutton.setOnAction(event ->  {
-            root.getChildren().removeAll(labelContinue, labelWIN, Nobutton, Yesbutton, player1, player2);
+            root.getChildren().removeAll(labelContinue, labelWIN, Nobutton, Yesbutton, player1, player2, SaveRecordButton);
 
             player1.setTranslateX(570);
             player1.setTranslateY(0);
@@ -258,10 +273,61 @@ public class GameProcess {
             root.getChildren().addAll(labelTimer);
 
             Timer.start();
-
         });
 
+        SaveRecordButton.setOnAction(event -> {
+            Stage SaveRecordStage = new Stage();
+            Pane SaveRecordroot = new Pane();
+
+            Label startLabel = new Label("Congratulations! Your time: " + timercount.toString() + " seconds");
+            startLabel.setFont(Font.font("Arial", FontWeight.BOLD, 15));
+
+            Label nickNameLabel = new Label("NickName: ");
+            nickNameLabel.setFont(Font.font("Arial", FontWeight.BOLD, 15));
+
+            TextField nickNameEnterTextField = new TextField();
+
+            HBox hBox = new HBox();
+            hBox.getChildren().addAll(nickNameLabel, nickNameEnterTextField);
+
+            Button saveRecordButton = new Button("Save record");
+            saveRecordButton.setPrefSize(100,10);
+            saveRecordButton.setOnAction(event1 -> {
+                if (nickNameEnterTextField.getText().isEmpty()) {
+                    new DialogMenager().showErrorDialogWindow("Save record",
+                                "Nickname is not entered",
+                                "Please enter nickname correctly");
+                    } else if (!isCorrectNickName(nickNameEnterTextField.getText())) {
+                        new DialogMenager().showErrorDialogWindow("Save record",
+                                "Nickname was entered incorrectly",
+                                "Use for input only English characters and numbers");
+                    } else {
+                    try {
+                        new InformationControl().SaveRecord(nickNameEnterTextField.getText(), timercount);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    new DialogMenager().showInfoDialogWindow("Save record",
+                            "Nickname " + nickNameEnterTextField.getText() + ": " + timercount.toString() + " seconds",
+                            "Record successfully saved");
+                    SaveRecordStage.close();
+                }
+            });
+
+            VBox vBox = new VBox();
+            vBox.getChildren().addAll(startLabel, hBox, saveRecordButton);
+
+            SaveRecordroot.getChildren().addAll(vBox);
+            Scene Rulesscene = new Scene(SaveRecordroot);
+            SaveRecordStage.setScene(Rulesscene);
+            SaveRecordStage.setResizable(false);
+            SaveRecordStage.show();
+        });
+
+
+
     }
+
     public void StartTimer() throws InterruptedException {
         score--;
         labelTimer.setText(score.toString());
@@ -270,9 +336,27 @@ public class GameProcess {
             Timer.stop();
             root.getChildren().remove(labelTimer);
             GameTimer.start();
+            ResetTimerCount();
+            RecordTimer = new Thread(new TimerCount());
+            RecordTimer.start();
         }
     }
+
     public void sleep(int time) throws InterruptedException {
         Thread.sleep(time);
+    }
+
+    public boolean isCorrectNickName(String tempnickname) {
+        if(tempnickname.contains(" ") || tempnickname.contains("-") || tempnickname.contains("*") ||
+                tempnickname.contains("_") || tempnickname.contains("@") || tempnickname.contains("&") ||
+                tempnickname.contains("?") || tempnickname.contains("!") || tempnickname.contains(".") ||
+                tempnickname.contains("#") || tempnickname.contains("^") || tempnickname.contains("%"))
+            return false;
+        else
+            return true;
+    }
+
+    public static void ResetTimerCount() {
+        timercount = 0;
     }
 }

@@ -1,4 +1,3 @@
-
 public class Records {
     java.lang.String Name;
     Double Time;

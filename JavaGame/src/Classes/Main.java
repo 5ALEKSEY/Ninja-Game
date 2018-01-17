@@ -1,10 +1,9 @@
 import javafx.application.Application;
-import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
@@ -13,6 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import java.io.IOException;
 
 public class Main extends Application{
     static Pane primaryroot = new Pane();
@@ -24,8 +24,11 @@ public class Main extends Application{
     Button ViewRecordTableButton = new Button("Таблица рекордов");
     Button ExitGameButton = new Button("Выйти");
     Media media = new Media("File:///D:/Алексей/Программы/work_space/JavaGameProject/src/music.mp3");
+    Image StageIcon = new Image(getClass().getResourceAsStream("stageicon.png"));
     MediaPlayer mediaPlayer = new MediaPlayer(media);
     Label WellcomeLabel = new Label("Ninja Game");
+    GameProcess gameProcess;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         mediaPlayer.setVolume(0.02);
@@ -47,10 +50,9 @@ public class Main extends Application{
         StartGameButton.setTranslateY(100);
 
         StartGameButton.setOnAction(event -> {
-            primaryStage.close();
-            GameProcess gameprocess = new GameProcess();
+            gameProcess = new GameProcess();
             try {
-                gameprocess.StartGame();
+                gameProcess.StartGame();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -62,13 +64,13 @@ public class Main extends Application{
         ViewRulesButton.setTranslateX(180);
         ViewRulesButton.setTranslateY(160);
 
-        java.lang.String finalRules = new InformationControl().GetRules();
+        java.lang.String TextRules = new InformationControl().GetRules();
         ViewRulesButton.setOnAction(event -> {
             Stage RulesStage = new Stage();
             Pane Rulesroot = new Pane();
             Rulesroot.setPrefSize(600,400);
 
-            TextArea RulesArea = new TextArea(finalRules);
+            TextArea RulesArea = new TextArea(TextRules);
             RulesArea.setEditable(false);
             RulesArea.setFont(new Font("Arial", 24));
             RulesArea.setPrefSize(605,405);
@@ -77,6 +79,8 @@ public class Main extends Application{
             Scene Rulesscene = new Scene(Rulesroot);
             RulesStage.setScene(Rulesscene);
             RulesStage.setResizable(false);
+            RulesStage.setTitle("Rules");
+            RulesStage.getIcons().add(StageIcon);
             RulesStage.show();
         });
 
@@ -86,28 +90,67 @@ public class Main extends Application{
         ViewRecordTableButton.setTranslateX(180);
         ViewRecordTableButton.setTranslateY(220);
 
-        ObservableList<Records> RecordsList = new InformationControl().getRecordsList();
+        java.lang.String  nameTableText = new InformationControl().GetRecordName();
+        java.lang.String  timeTableText = new InformationControl().GetRecordTime();
         ViewRecordTableButton.setOnAction(event -> {
             Stage RecordTableStage = new Stage();
 
-            TableColumn<Records, java.lang.String> RecordNameColumn = new TableColumn<>("Name");
-            RecordNameColumn.setMinWidth(200);
-            RecordNameColumn.setCellValueFactory(new PropertyValueFactory<Records, java.lang.String>("name"));
+            Label nickNameEnterLabel = new Label("Enter nickname for fast search:");
+            nickNameEnterLabel.setFont(Font.font("Arial", FontWeight.BOLD, 15));
 
-            TableColumn<Records, Double> RecordTimeColumn = new TableColumn<>("Time");
-            RecordTimeColumn.setMinWidth(200);
-            RecordTimeColumn.setCellValueFactory(new PropertyValueFactory<Records, Double>("time"));
+            TextField nickNameEnterTextField = new TextField();
 
-            TableView<Records> tableView = new TableView<>();
-            tableView.setItems(RecordsList);
-            tableView.getColumns().addAll(RecordNameColumn, RecordTimeColumn);
+            Button findRecordButton = new Button("Find record");
+            findRecordButton.setOnAction(event1 -> {
+                try {
+                    if (nickNameEnterTextField.getText().isEmpty()) {
+                        new DialogMenager().showErrorDialogWindow("Search by nickname",
+                                "Nickname is not entered",
+                                "Please enter nickname correctly");
+                    } else if (new InformationControl().GetTimeFromNickName(nickNameEnterTextField.getText()) == null) {
+                        new DialogMenager().showErrorDialogWindow("Search by nickname",
+                                "Record by nickname " + nickNameEnterTextField.getText() + " not found",
+                                "Nickname is incorrect or nickname is not present in the table");
+                    } else {
+                        new DialogMenager().showInfoDialogWindow("Search by nickname",
+                                "Record by nickname " + nickNameEnterTextField.getText() + ": "
+                                        + new InformationControl().GetTimeFromNickName(nickNameEnterTextField.getText()),
+                                "Record successfully found");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            nickNameEnterTextField.setOnAction(findRecordButton.getOnAction());
+
+            Label tableLabel = new Label("Record table");
+            tableLabel.setFont(Font.font("Arial", FontWeight.BOLD, 15));
+            tableLabel.setTextFill(Color.RED);
+
+            TextArea tableNameTextArea = new TextArea("NICKNAME\n\n" + nameTableText);
+            tableNameTextArea.setEditable(false);
+            tableNameTextArea.setFont(new Font("Arial", 15));
+            tableNameTextArea.setPrefSize(150,250);
+
+            TextArea tableTimeTextArea = new TextArea("TIME (sec)\n\n" + timeTableText);
+            tableTimeTextArea.setEditable(false);
+            tableTimeTextArea.setFont(new Font("Arial", 15));
+            tableTimeTextArea.setPrefSize(150,250);
+
+            HBox hBox = new HBox();
+            hBox.getChildren().addAll(tableNameTextArea, tableTimeTextArea);
 
             VBox vBox = new VBox();
-            vBox.getChildren().addAll(tableView);
+            vBox.getChildren().addAll(nickNameEnterLabel, nickNameEnterTextField,
+                    findRecordButton, tableLabel, hBox);
+
 
             Scene RecordTablescene = new Scene(vBox);
             RecordTableStage.setScene(RecordTablescene);
             RecordTableStage.setResizable(true);
+            RecordTableStage.setTitle("Record table");
+            RecordTableStage.getIcons().add(StageIcon);
             RecordTableStage.show();
         });
 
@@ -125,6 +168,8 @@ public class Main extends Application{
                 ViewRecordTableButton, ExitGameButton, WellcomeLabel);
         primaryStage.setScene(primaryscene);
         primaryStage.setResizable(false);
+        primaryStage.setTitle("Main menu");
+        primaryStage.getIcons().add(StageIcon);
         primaryStage.show();
     }
 
