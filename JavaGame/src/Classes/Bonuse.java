@@ -7,6 +7,9 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+/**
+ * This class is necessary to create a bonus on the game board
+ */
 public class Bonuse extends Rectangle {
     public static final int BonuseSize = 25;
     private int OffsetX;
@@ -18,7 +21,13 @@ public class Bonuse extends Rectangle {
     Image BonuseImage = new Image(getClass().getResourceAsStream("bonus.png"));
     Image SpecBonuseImage = new Image(getClass().getResourceAsStream("specbonus.png"));
 
-    public Bonuse (int OffsetX, int OffsetY, int KindOfBonuse) {
+    /**
+     * Bonuse class constructor
+     * @param OffsetX Coordinate X on the playing field
+     * @param OffsetY Coordinate Y on the playing field
+     * @param KindOfBonuse Bonus type (1 or 2 points)
+     */
+    public Bonuse(int OffsetX, int OffsetY, int KindOfBonuse) {
         this.OffsetX = OffsetX;
         this.OffsetY = OffsetY;
         this.KindOfBonuse = KindOfBonuse;
@@ -30,11 +39,18 @@ public class Bonuse extends Rectangle {
             CreateSpecBonuse();
     }
 
-    public int GetKindOfBonuse () {
+    /**
+     * The method is necessary for determining the type of bonus
+     * @return Kind of bonus
+     */
+    public int GetKindOfBonuse() {
         return this.KindOfBonuse;
     }
 
-    public void CreateBonuse () {
+    /**
+     * The method creates a simple bonus
+     */
+    public void CreateBonuse() {
         setWidth(BonuseSize);
         setHeight(BonuseSize);
         setFill(new ImagePattern(BonuseImage));
@@ -49,7 +65,10 @@ public class Bonuse extends Rectangle {
         setEffect(this.Shadow);
     }
 
-    public void CreateHighBonuse () {
+    /**
+     * The method creates a high bonus
+     */
+    public void CreateHighBonuse() {
         setWidth(BonuseSize);
         setHeight(BonuseSize);
         setFill(new ImagePattern(HighBonuseImage));
@@ -64,7 +83,10 @@ public class Bonuse extends Rectangle {
         setEffect(this.Shadow);
     }
 
-    public void CreateSpecBonuse () {
+    /**
+     * The method creates a special bonus
+     */
+    public void CreateSpecBonuse() {
         setWidth(BonuseSize);
         setHeight(BonuseSize);
         setFill(new ImagePattern(SpecBonuseImage));

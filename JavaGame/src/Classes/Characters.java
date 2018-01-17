@@ -3,6 +3,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
+/**
+ * Class is needed to create characters on the playing board
+ */
 public class Characters extends Pane{
     boolean SpecialReception;
     ImageView imgview;
@@ -15,6 +18,11 @@ public class Characters extends Pane{
     int score = 0;
     SpriteAnimation animation;
     Bonuse DellBonuse = null;
+
+    /**
+     * Characters class constructor
+     * @param imgview sprite image of the character
+     */
     public Characters(ImageView imgview) {
         this.SpecialReception = false;
         this.imgview = imgview;
@@ -22,6 +30,11 @@ public class Characters extends Pane{
         animation = new SpriteAnimation(Duration.millis(500),imgview, count, columns, offsetX, offsetY, width, height);
         getChildren().addAll(imgview);
     }
+
+    /**
+     * The method is necessary to move the character on the playing field along the coordinate X
+     * @param x Indent from current coordinate X
+     */
     public void moveX(int x) {
         boolean right = x > 0 ? true : false;
         for(int i = 0; i < Math.abs(x); i++) {
@@ -36,6 +49,11 @@ public class Characters extends Pane{
             isBonuseEat();
         }
     }
+
+    /**
+     * The method is necessary to move the character on the playing field along the coordinate Y
+     * @param y Indent from current coordinate Y
+     */
     public void moveY(int y) {
         boolean down = y > 0 ? true : false;
         for(int i = 0; i < Math.abs(y); i++) {
@@ -50,6 +68,10 @@ public class Characters extends Pane{
             isBonuseEat();
         }
     }
+
+    /**
+     * The method is necessary for checking the match of the character's coordinates and the bonus
+     */
     public void isBonuseEat() {
         GameProcess.bonuses.forEach((bonuse -> {
             if (this.getBoundsInParent().intersects(bonuse.getBoundsInParent())) {
@@ -64,14 +86,26 @@ public class Characters extends Pane{
         GameProcess.root.getChildren().remove(this.DellBonuse);
     }
 
+    /**
+     * The method for installing a special reception after collecting special bonuses
+     * @param SpecialReception Boolean variable of the possibility of special reception
+     */
     public void SetSpecialReception (boolean SpecialReception) {
         this.SpecialReception = SpecialReception;
     }
 
+    /**
+     * The method is necessary for checking for the possibility of using a special reception
+     * @return Boolean variable of the possibility of special reception
+     */
     public boolean GetSpecialReception () {
         return this.SpecialReception;
     }
 
+    /**
+     * The method is required to install a game score
+     * @param OffsetScore Change of the game score in relation to the current
+     */
     public void SetScore(int OffsetScore) {
         this.score += OffsetScore;
     }

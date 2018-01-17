@@ -13,10 +13,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * A class is needed to create a game process
+ */
 public class GameProcess {
     public static final int END_GAME = 50;
     private HashMap<KeyCode, Boolean> keys = new HashMap<>();
@@ -48,8 +52,13 @@ public class GameProcess {
     Thread RecordTimer;
     public static Integer timercount;
 
+    /**
+     * The method is necessary for creating a game board and game process
+     *
+     * @throws Exception Expected exception
+     */
     public void StartGame() throws Exception {
-        root.setPrefSize(600,400);
+        root.setPrefSize(600, 400);
         imageView3.setFitHeight(450);
         imageView3.setFitWidth(650);
 
@@ -102,55 +111,66 @@ public class GameProcess {
         GameStage.show();
     }
 
+    /**
+     * The method is necessary for catching keystrokes of the keyboard
+     *
+     * @param keyCode keyboard key code
+     * @return adding to the list of keys
+     */
     public boolean isPressed(KeyCode keyCode) {
         return keys.getOrDefault(keyCode, false);
     }
 
+    /**
+     * The method is necessary for moving the first character on the playing board
+     */
     public void UpdateForFirstCharacter() {
-        if(isPressed(KeyCode.UP)) {
+        if (isPressed(KeyCode.UP)) {
             player1.animation.play();
             player1.animation.setOffsetY(192);
             player1.moveY(-2);
-        } else if(isPressed(KeyCode.DOWN)) {
+        } else if (isPressed(KeyCode.DOWN)) {
             player1.animation.play();
             player1.animation.setOffsetY(0);
             player1.moveY(2);
-        } else if(isPressed(KeyCode.LEFT)) {
+        } else if (isPressed(KeyCode.LEFT)) {
             player1.animation.play();
             player1.animation.setOffsetY(64);
             player1.moveX(-2);
-        } else if(isPressed(KeyCode.RIGHT)) {
+        } else if (isPressed(KeyCode.RIGHT)) {
             player1.animation.play();
             player1.animation.setOffsetY(128);
             player1.moveX(2);
-        } else if(isPressed(KeyCode.ENTER)) {
+        } else if (isPressed(KeyCode.ENTER)) {
             if (player1.GetSpecialReception() == true) {
                 player2.SetScore(-5);
                 player1.SetSpecialReception(false);
             }
-        }
-        else
+        } else
             player1.animation.stop();
     }
 
+    /**
+     * The method is necessary for moving the second character on the playing board
+     */
     public void UpdateForSecondCharacter() {
-        if(isPressed(KeyCode.W)) {
+        if (isPressed(KeyCode.W)) {
             player2.animation.play();
             player2.animation.setOffsetY(192);
             player2.moveY(-2);
-        } else if(isPressed(KeyCode.S)) {
+        } else if (isPressed(KeyCode.S)) {
             player2.animation.play();
             player2.animation.setOffsetY(0);
             player2.moveY(2);
-        } else if(isPressed(KeyCode.A)) {
+        } else if (isPressed(KeyCode.A)) {
             player2.animation.play();
             player2.animation.setOffsetY(64);
             player2.moveX(-2);
-        } else if(isPressed(KeyCode.D)) {
+        } else if (isPressed(KeyCode.D)) {
             player2.animation.play();
             player2.animation.setOffsetY(128);
             player2.moveX(2);
-        } else if(isPressed(KeyCode.SPACE)) {
+        } else if (isPressed(KeyCode.SPACE)) {
             if (player2.GetSpecialReception() == true) {
                 player1.SetScore(-5);
                 player2.SetSpecialReception(false);
@@ -159,37 +179,46 @@ public class GameProcess {
             player2.animation.stop();
     }
 
+    /**
+     * The method is necessary to create a bonus on the playing board
+     */
     public void AddBonus() {
-        int specrandom = (int)Math.floor(Math.random()*1000);
-        int sx = (int)Math.floor(Math.random()*580);
-        int sy = (int)Math.floor(Math.random()*330 + 50);
-        int highrandom = (int)Math.floor(Math.random()*500);
-        int hx = (int)Math.floor(Math.random()*580);
-        int hy = (int)Math.floor(Math.random()*330 + 50);
-        int random = (int)Math.floor(Math.random()*85);
-        int x = (int)Math.floor(Math.random()*580);
-        int y = (int)Math.floor(Math.random()*330 + 50);
-        if(random == 50) {
-            Bonuse bonuse = new Bonuse(x, y,1);
+        int specrandom = (int) Math.floor(Math.random() * 1000);
+        int sx = (int) Math.floor(Math.random() * 580);
+        int sy = (int) Math.floor(Math.random() * 330 + 50);
+        int highrandom = (int) Math.floor(Math.random() * 500);
+        int hx = (int) Math.floor(Math.random() * 580);
+        int hy = (int) Math.floor(Math.random() * 330 + 50);
+        int random = (int) Math.floor(Math.random() * 85);
+        int x = (int) Math.floor(Math.random() * 580);
+        int y = (int) Math.floor(Math.random() * 330 + 50);
+        if (random == 50) {
+            Bonuse bonuse = new Bonuse(x, y, 1);
             bonuses.add(bonuse);
             root.getChildren().addAll(bonuse);
         }
-        if(highrandom == 250) {
+        if (highrandom == 250) {
             Bonuse highbonuse = new Bonuse(hx, hy, 2);
             bonuses.add(highbonuse);
             root.getChildren().addAll(highbonuse);
         }
-        if(specrandom == 250) {
+        if (specrandom == 250) {
             Bonuse specbonuse = new Bonuse(sx, sy, 3);
             bonuses.add(specbonuse);
             root.getChildren().addAll(specbonuse);
         }
     }
 
+    /**
+     * Method is required to update the game points
+     */
     public void UpdateScore() {
         ScoreLabel.setText(player2.score + ":" + player1.score);
     }
 
+    /**
+     * The method is necessary to wait for the end event of the game
+     */
     public void TheEnd() {
         if (player1.score >= END_GAME) {
             labelWIN.setText("Red player WIN!");
@@ -200,7 +229,7 @@ public class GameProcess {
             root.getChildren().addAll(labelWIN);
             Continue();
         }
-        if(player2.score >= END_GAME) {
+        if (player2.score >= END_GAME) {
             labelWIN.setText("Blue player WIN!");
             labelWIN.setFont(Font.font("Arial", FontWeight.BOLD, 60));
             labelWIN.setTranslateY(WinOffsetY);
@@ -211,6 +240,9 @@ public class GameProcess {
         }
     }
 
+    /**
+     * The method is necessary to suggest a choice about further actions
+     */
     public void Continue() {
         GameTimer.stop();
         RecordTimer.stop();
@@ -220,13 +252,13 @@ public class GameProcess {
         labelContinue.setTranslateY(WinOffsetY + 80);
         labelContinue.setTextFill(Color.BISQUE);
 
-        SaveRecordButton.setPrefSize(400,30);
+        SaveRecordButton.setPrefSize(400, 30);
         SaveRecordButton.setFont(Font.font("Arial", FontWeight.LIGHT, 15));
         SaveRecordButton.setTextFill(Color.RED);
         SaveRecordButton.setTranslateX(110);
         SaveRecordButton.setTranslateY(330);
 
-        Yesbutton.setPrefSize(100,30);
+        Yesbutton.setPrefSize(100, 30);
         Yesbutton.setFont(Font.font("Arial", FontWeight.LIGHT, 20));
         Yesbutton.setTextFill(Color.RED);
         Yesbutton.setTranslateX(WinOffsetX + 95);
@@ -247,7 +279,7 @@ public class GameProcess {
             GameStage.close();
         });
 
-        Yesbutton.setOnAction(event ->  {
+        Yesbutton.setOnAction(event -> {
             root.getChildren().removeAll(labelContinue, labelWIN, Nobutton, Yesbutton, player1, player2, SaveRecordButton);
 
             player1.setTranslateX(570);
@@ -265,7 +297,7 @@ public class GameProcess {
             player2.score = player1.score = 0;
             UpdateScore();
 
-            while(bonuses.size() > 0) {
+            while (bonuses.size() > 0) {
                 root.getChildren().remove(bonuses.get(0));
                 bonuses.remove(0);
             }
@@ -291,17 +323,17 @@ public class GameProcess {
             hBox.getChildren().addAll(nickNameLabel, nickNameEnterTextField);
 
             Button saveRecordButton = new Button("Save record");
-            saveRecordButton.setPrefSize(100,10);
+            saveRecordButton.setPrefSize(100, 10);
             saveRecordButton.setOnAction(event1 -> {
                 if (nickNameEnterTextField.getText().isEmpty()) {
                     new DialogMenager().showErrorDialogWindow("Save record",
-                                "Nickname is not entered",
-                                "Please enter nickname correctly");
-                    } else if (!isCorrectNickName(nickNameEnterTextField.getText())) {
-                        new DialogMenager().showErrorDialogWindow("Save record",
-                                "Nickname was entered incorrectly",
-                                "Use for input only English characters and numbers");
-                    } else {
+                            "Nickname is not entered",
+                            "Please enter nickname correctly");
+                } else if (!isCorrectNickName(nickNameEnterTextField.getText())) {
+                    new DialogMenager().showErrorDialogWindow("Save record",
+                            "Nickname was entered incorrectly",
+                            "Use for input only English characters and numbers");
+                } else {
                     try {
                         new InformationControl().SaveRecord(nickNameEnterTextField.getText(), timercount);
                     } catch (IOException e) {
@@ -323,15 +355,16 @@ public class GameProcess {
             SaveRecordStage.setResizable(false);
             SaveRecordStage.show();
         });
-
-
-
     }
 
+    /**
+     * The method is necessary for the initial timer
+     * @throws InterruptedException Expected exception
+     */
     public void StartTimer() throws InterruptedException {
         score--;
         labelTimer.setText(score.toString());
-        if(score == 0) {
+        if (score == 0) {
             score = 4;
             Timer.stop();
             root.getChildren().remove(labelTimer);
@@ -342,12 +375,22 @@ public class GameProcess {
         }
     }
 
+    /**
+     * The method is required to set the interval for the initial timer
+     * @param time number of sleep timer in milliseconds
+     * @throws InterruptedException
+     */
     public void sleep(int time) throws InterruptedException {
         Thread.sleep(time);
     }
 
+    /**
+     * Method for checking for correct input of a nickname
+     * @param tempnickname nickname for verification
+     * @return Boolean test result variable
+     */
     public boolean isCorrectNickName(String tempnickname) {
-        if(tempnickname.contains(" ") || tempnickname.contains("-") || tempnickname.contains("*") ||
+        if (tempnickname.contains(" ") || tempnickname.contains("-") || tempnickname.contains("*") ||
                 tempnickname.contains("_") || tempnickname.contains("@") || tempnickname.contains("&") ||
                 tempnickname.contains("?") || tempnickname.contains("!") || tempnickname.contains(".") ||
                 tempnickname.contains("#") || tempnickname.contains("^") || tempnickname.contains("%"))
@@ -356,6 +399,9 @@ public class GameProcess {
             return true;
     }
 
+    /**
+     * Method for resetting the main game timer
+     */
     public static void ResetTimerCount() {
         timercount = 0;
     }

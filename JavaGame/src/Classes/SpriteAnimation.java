@@ -4,6 +4,9 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
+/**
+ * The class needed to create sprite animation
+ */
 public class SpriteAnimation extends Transition{
     private final ImageView img;
     private final int count;
@@ -12,6 +15,7 @@ public class SpriteAnimation extends Transition{
     private int offsetY;
     private final int width;
     private final int height;
+
     SpriteAnimation(Duration curation, ImageView img, int count, int colunms, int offsetX, int offsetY, int width, int height) {
         this.img = img;
         this.columns = colunms;

@@ -14,6 +14,9 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import java.io.IOException;
 
+/**
+ * Class for creating the main menu
+ */
 public class Main extends Application{
     static Pane primaryroot = new Pane();
     Scene primaryscene = new Scene(primaryroot);
@@ -29,6 +32,11 @@ public class Main extends Application{
     Label WellcomeLabel = new Label("Ninja Game");
     GameProcess gameProcess;
 
+    /**
+     * The main method of creating menus
+     * @param primaryStage primary stage in menu
+     * @throws Exception Expected exceptions
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
         mediaPlayer.setVolume(0.02);
@@ -172,5 +180,4 @@ public class Main extends Application{
         primaryStage.getIcons().add(StageIcon);
         primaryStage.show();
     }
-
 }
